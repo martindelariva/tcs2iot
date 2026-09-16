@@ -1,9 +1,9 @@
 # Secrets / certificates
-certs/*.pem
-certs/*.crt
-certs/*.key
-.env
-
+#certs/*.pem
+#certs/*.crt
+#certs/*.key
+#.env
+venv/
 # Generated test output
 data/test-out.txt
 
