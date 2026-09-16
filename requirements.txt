@@ -1,0 +1,8 @@
+# AWS IoT Device SDK for Python v2 (MQTT over mTLS with X.509 certs).
+# Pulls in awscrt as a dependency. Precompiled wheels are available for
+# Linux/x86_64 and arm, so no C toolchain is needed in the image.
+awsiotsdk~=1.24
+
+# Included per request; useful for AWS API calls (e.g. provisioning,
+# fetching the IoT data endpoint via boto3 iot describe-endpoint, S3, etc.).
+boto3~=1.35

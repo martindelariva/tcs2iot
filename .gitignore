@@ -1,0 +1,12 @@
+# Secrets / certificates
+certs/*.pem
+certs/*.crt
+certs/*.key
+.env
+
+# Generated test output
+data/test-out.txt
+
+# Python
+__pycache__/
+*.pyc

@@ -1,0 +1,41 @@
+services:
+  # Simulates a live feed: appends one capture line per second to test-out.txt.
+  generator:
+    build: .
+    image: tcs2iot
+    command: python generate_test_out.py --reset --loop
+    environment:
+      SOURCE_FILE: /data/captura-tcs-gps.txt
+      OUT_FILE: /data/test-out.txt
+      INTERVAL: "10.0"
+    volumes:
+      - ./data:/data
+    restart: unless-stopped
+
+  # Tails test-out.txt, parses each line to JSON, publishes to AWS IoT Core.
+  processor:
+    build: .
+    image: tcs2iot
+    command: python processor.py
+    depends_on:
+      - generator
+    environment:
+      WATCH_FILE: /data/test-out.txt
+      POLL_INTERVAL: "0.25"
+      # --- AWS IoT Core config ---
+      # Leave IOT_ENDPOINT empty to run in DRY-RUN mode (prints payloads).
+      # Fill these in once your Thing + certs exist.
+      IOT_ENDPOINT: "${IOT_ENDPOINT:-}"
+      IOT_TOPIC: "${IOT_TOPIC:-tcs/gps}"
+      IOT_CLIENT_ID: "${IOT_CLIENT_ID:-tcs2iot-processor}"
+      IOT_CERT_PATH: /certs/device.pem.crt
+      IOT_KEY_PATH: /certs/private.pem.key
+      IOT_CA_PATH: /certs/AmazonRootCA1.pem
+      IOT_QOS: "0"
+    volumes:
+      - ./data:/data
+      # Mount your device certificates here (read-only).
+      # Create ./certs and drop device.pem.crt, private.pem.key,
+      # and AmazonRootCA1.pem into it once the Thing is provisioned.
+      - ./certs:/certs:ro
+    restart: unless-stopped

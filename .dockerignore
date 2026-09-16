@@ -1,0 +1,7 @@
+.git
+__pycache__
+*.pyc
+certs
+data/test-out.txt
+.env
+*.md
