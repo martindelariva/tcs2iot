@@ -4,6 +4,7 @@
 #certs/*.key
 #.env
 venv/
+pip/
 # Generated test output
 data/test-out.txt
 
