@@ -3,8 +3,9 @@
 
 Uses the AWS IoT Device SDK for Python v2 (awsiotsdk / awscrt).
 
-Configuration is read from environment variables so the same image works
-across devices/things without code changes:
+Configuration is read from the config file (see config.py / config.ini) so
+the same image works across devices/things without code changes. Environment
+variables of the same name still override the file values:
 
     IOT_ENDPOINT      AWS IoT Core ATS endpoint
                       (e.g. xxxxxxxx-ats.iot.us-east-1.amazonaws.com)
@@ -15,7 +16,7 @@ across devices/things without code changes:
     IOT_CA_PATH       Path to the Amazon Root CA (PEM)
     IOT_QOS           0 or 1 (default: 1)
 
-If IOT_ENDPOINT is unset, the publisher runs in "dry-run" mode and simply
+If IOT_ENDPOINT is empty, the publisher runs in "dry-run" mode and simply
 prints payloads. This lets you exercise the full pipeline before the Thing
 and its certificates exist.
 """
@@ -26,18 +27,20 @@ import sys
 import time
 from typing import Optional
 
+from config import CONFIG
+
 
 class Publisher:
     """Thin wrapper around an MQTT connection to AWS IoT Core."""
 
     def __init__(self) -> None:
-        self.endpoint = os.getenv("IOT_ENDPOINT", "").strip()
-        self.topic = os.getenv("IOT_TOPIC", "tcs/gps").strip()
-        self.client_id = os.getenv("IOT_CLIENT_ID", f"tcs2iot-{os.getpid()}").strip()
-        self.cert_path = os.getenv("IOT_CERT_PATH", "/certs/device.pem.crt")
-        self.key_path = os.getenv("IOT_KEY_PATH", "/certs/private.pem.key")
-        self.ca_path = os.getenv("IOT_CA_PATH", "/certs/AmazonRootCA1.pem")
-        self.qos_level = int(os.getenv("IOT_QOS", "1"))
+        self.endpoint = CONFIG.iot_endpoint
+        self.topic = CONFIG.iot_topic
+        self.client_id = CONFIG.iot_client_id
+        self.cert_path = CONFIG.iot_cert_path
+        self.key_path = CONFIG.iot_key_path
+        self.ca_path = CONFIG.iot_ca_path
+        self.qos_level = CONFIG.iot_qos
 
         self._connection = None
         self._dry_run = not self.endpoint

@@ -19,6 +19,8 @@ from __future__ import annotations
 import json
 from typing import Any, Dict
 
+from config import CONFIG
+
 
 class ParseError(ValueError):
     """Raised when a raw line cannot be parsed into the expected structure."""
@@ -52,15 +54,16 @@ def parse_line(line: str) -> Dict[str, Any]:
 
     try:
         payload: Dict[str, Any] = {
-            "date": date.strip(),
-            "tetra": tetra.strip(),
-            "message": message.strip(),
-            "coordenadas": {
+            "gis_layer": CONFIG.gis_layer,
+            "time": date.strip(),
+            "terminal_id": tetra.strip(),
+            "protocol": message.strip().lstrip("<"),
+            "loc": {
                 "lat": float(lat),
-                "long": float(lon),
+                "lon": float(lon),
             },
-            "field6": float(field6),
-            "field7": float(field7),
+            #"field6": float(field6),
+            #"field7": float(field7),
         }
     except ValueError as exc:
         raise ParseError(f"could not parse numeric field in {raw!r}: {exc}") from exc

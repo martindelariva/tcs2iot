@@ -10,7 +10,8 @@ Environment / defaults are container-friendly:
     OUT_FILE     default /data/test-out.txt
     INTERVAL     default 1.0 (seconds)
 
-CLI flags override env vars.
+Values come from the config file (config.ini); environment variables of the
+same name override the file. CLI flags override both.
 """
 from __future__ import annotations
 
@@ -18,9 +19,11 @@ import argparse
 import os
 import time
 
-SOURCE_PATH = os.getenv("SOURCE_FILE", "/data/captura-tcs-gps.txt")
-OUT_PATH = os.getenv("OUT_FILE", "/data/test-out.txt")
-INTERVAL = float(os.getenv("INTERVAL", "10.0"))
+from config import CONFIG
+
+SOURCE_PATH = CONFIG.source_file
+OUT_PATH = CONFIG.out_file
+INTERVAL = CONFIG.interval
 
 
 def parse_args():

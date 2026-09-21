@@ -6,21 +6,22 @@ Ties together:
     - parser.parse_to_json (raw line -> JSON)
     - iot_publisher.Publisher (JSON -> AWS IoT Core topic)
 
-Environment:
-    WATCH_FILE   File to tail (default: /data/test-out.txt)
+Configuration (config.ini, env vars override):
+    WATCH_FILE     File to tail (default: /data/test-out.txt)
     POLL_INTERVAL  Seconds between reads when idle (default: 0.25)
-    plus all IOT_* vars consumed by iot_publisher.Publisher.
+    plus all IOT_* keys consumed by iot_publisher.Publisher.
 """
 from __future__ import annotations
 
 import os
 import time
 
+from config import CONFIG
 from iot_publisher import Publisher
 from parser import ParseError, parse_to_json
 
-WATCH_FILE = os.getenv("WATCH_FILE", "/data/test-out.txt")
-POLL_INTERVAL = float(os.getenv("POLL_INTERVAL", "0.25"))
+WATCH_FILE = CONFIG.watch_file
+POLL_INTERVAL = CONFIG.poll_interval
 
 
 def follow(path: str, poll_interval: float = 0.25):
