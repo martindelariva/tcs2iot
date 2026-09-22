@@ -29,6 +29,10 @@ _SECTION = "tcs2iot"
 _DEFAULTS = {
     "GIS_LAYER": "TETRA",
     "WATCH_FILE": "/data/test-out.txt",
+    # Daily-rotating log support: directory to scan and the glob pattern of
+    # the rotating files. The "current" file is the newest matching name.
+    "WATCH_DIR": "/data",
+    "FILE_PATTERN": "DataLog_*.csv",
     "POLL_INTERVAL": "0.25",
     "SOURCE_FILE": "/data/captura-tcs-gps.txt",
     "OUT_FILE": "/data/test-out.txt",
@@ -92,6 +96,14 @@ class Config:
     @property
     def watch_file(self) -> str:
         return self.get("WATCH_FILE")
+
+    @property
+    def watch_dir(self) -> str:
+        return self.get("WATCH_DIR")
+
+    @property
+    def file_pattern(self) -> str:
+        return self.get("FILE_PATTERN")
 
     @property
     def poll_interval(self) -> float:
